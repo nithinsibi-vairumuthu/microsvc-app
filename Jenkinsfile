@@ -41,8 +41,8 @@ pipeline {
       steps {
         sh '''
           echo "Running vulnerability scan"
-          # Later: trivy image service-a:${IMAGE_TAG}
-          # Later: trivy image service-b:${IMAGE_TAG}
+              trivy image --exit-code 1 --severity HIGH,CRITICAL service-a:${IMAGE_TAG}
+              trivy image --exit-code 1 --severity HIGH,CRITICAL service-b:${IMAGE_TAG}
         '''
       }
     }
