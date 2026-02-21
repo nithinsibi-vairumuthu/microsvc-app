@@ -4,7 +4,8 @@ pipeline {
   environment {
     AWS_REGION = "ap-south-1"
     ACCOUNT_ID = "730335674713"   // 🔴 change this
-    IMAGE_TAG  = "${BUILD_NUMBER}"
+    VERSION    = "v1.0.${BUILD_NUMBER}"   // simple auto-version for now
+    GIT_SHA    = "${env.GIT_COMMIT}".take(7)
   }
 
   stages {
@@ -21,7 +22,7 @@ pipeline {
         stage('Build Service A (Auth)') {
           steps {
             dir('service-a') {
-              sh "docker build --no-cache -t service-a:${IMAGE_TAG} ."
+              sh "docker build --no-cache -t service-a:build ."
             }
           }
         }
@@ -29,7 +30,7 @@ pipeline {
         stage('Build Service B (Payment)') {
           steps {
             dir('service-b') {
-              sh "docker build --no-cache -t service-b:${IMAGE_TAG} ."
+              sh "docker build --no-cache -t service-b:build ."
             }
           }
         }
@@ -54,11 +55,17 @@ pipeline {
           docker login --username AWS --password-stdin \
           $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-          docker tag service-a:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$IMAGE_TAG
-          docker tag service-b:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$IMAGE_TAG
+          docker tag service-a:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$VERSION
+          docker tag service-a:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$GIT_SHA
 
-          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$IMAGE_TAG
-          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$IMAGE_TAG
+          docker tag service-b:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$VERSION
+          docker tag service-a:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$GIT_SHA
+
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$VERSION
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$GIT_SHA
+          
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$VERSION
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$GIT_SHA
         '''
       }
     }
