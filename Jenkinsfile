@@ -42,8 +42,8 @@ pipeline {
       steps {
         sh '''
           echo "Running vulnerability scan"
-              trivy image --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL service-a:${IMAGE_TAG}
-              trivy image --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL service-b:${IMAGE_TAG}
+              trivy image --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL service-a:build
+              trivy image --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL service-b:build
         '''
       }
     }
