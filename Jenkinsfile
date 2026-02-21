@@ -72,11 +72,21 @@ pipeline {
 
     stage('Deploy with Rolling Update') {
       steps {
-        sh '''
-          echo "Triggering rolling update in Kubernetes"
-          # kubectl apply -f k8s/service-a/
-          # kubectl apply -f k8s/service-b/
-        '''
+            sh '''
+              set -e
+
+              # ---- Deploy service-a ----
+              git checkout -- service-a/k8s/deployment.yaml
+              sed -i "s/REPLACE_TAG/$VERSION/g" service-a/k8s/deployment.yaml
+              kubectl apply -n service-a -f service-a/k8s/deployment.yaml
+              kubectl rollout status deployment/service-a -n service-a
+
+              # ---- Deploy service-b ----
+              git checkout -- service-b/k8s/deployment.yaml
+              sed -i "s/REPLACE_TAG/$VERSION/g" service-b/k8s/deployment.yaml
+              kubectl apply -n service-b -f service-b/k8s/deployment.yaml
+              kubectl rollout status deployment/service-b -n service-b
+              '''
       }
     }
   }

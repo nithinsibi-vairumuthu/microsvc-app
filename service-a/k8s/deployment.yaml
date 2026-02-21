@@ -23,13 +23,13 @@ spec:
     spec:
       containers:
       - name: service-a
-        image: 730335674713.dkr.ecr.ap-south-1.amazonaws.com/service-a:v1.0.12
+        image: 730335674713.dkr.ecr.ap-south-1.amazonaws.com/service-a:REPLACE_TAG
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         env:
         - name: APP_VERSION
-          value: "v1.0.12"
+          value: "REPLACE_TAG"
 
         readinessProbe:
           httpGet:
