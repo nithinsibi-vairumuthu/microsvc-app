@@ -21,7 +21,7 @@ pipeline {
         stage('Build Service A (Auth)') {
           steps {
             dir('service-a') {
-              sh "docker build -t service-a:${IMAGE_TAG} ."
+              sh "docker build --no-cache -t service-a:${IMAGE_TAG} ."
             }
           }
         }
@@ -29,7 +29,7 @@ pipeline {
         stage('Build Service B (Payment)') {
           steps {
             dir('service-b') {
-              sh "docker build -t service-b:${IMAGE_TAG} ."
+              sh "docker build --no-cache -t service-b:${IMAGE_TAG} ."
             }
           }
         }
