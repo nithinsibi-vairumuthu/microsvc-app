@@ -55,11 +55,11 @@ pipeline {
           docker login --username AWS --password-stdin \
           $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-          docker tag service-a:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$VERSION
+          docker tag service-a:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$VERSION
           docker tag service-a:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$GIT_SHA
 
-          docker tag service-b:$IMAGE_TAG $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$VERSION
-          docker tag service-a:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$GIT_SHA
+          docker tag service-b:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$VERSION
+          docker tag service-b:build $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-b:$GIT_SHA
 
           docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$VERSION
           docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/service-a:$GIT_SHA
